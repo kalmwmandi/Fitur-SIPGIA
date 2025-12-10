@@ -31,7 +31,27 @@ def simpan_user(username, password, nama, role, filename="database_user.txt"):
     file.write(f"{username}|{password}|{nama}|{role}\n")
     file.close()
 
-
+def baca_catatan_gizi(filename="database_catatan_gizi.txt"):
+    """Membaca semua catatan gizi dari file txt"""
+    catatan = []
+    if os.path.exists(filename):
+        file = open(filename, "r")
+        lines = file.readlines()
+        file.close()
+        for line in lines:
+            data = line.strip().split("|")
+            if len(data) >= 7:
+                item = {
+                    "id": data[0],
+                    "username": data[1],
+                    "tanggal": data[2],
+                    "makanan": data[3],
+                    "kalori": data[4],
+                    "protein": data[5],
+                    "karbohidrat": data[6]
+                }
+                catatan.append(item)
+    return catatan
 
 # Jalankan program
 if __name__ == "__main__":
