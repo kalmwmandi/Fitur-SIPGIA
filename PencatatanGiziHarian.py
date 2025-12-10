@@ -126,6 +126,61 @@ def hitung_total_gizi_harian(catatan_list):
         "total_karbohidrat": total_karbohidrat
     }
 
+# ============== FUNGSI TAMPILAN CLI ==============
+
+def tampilkan_header():
+    """Menampilkan header aplikasi"""
+    print("\n" + "="*50)
+    print("          SIPGIA - Sistem Informasi Gizi")
+    print("           Pencatatan Gizi Harian")
+    print("="*50)
+
+def menu_utama():
+    """Menampilkan menu utama"""
+    print("\n--- MENU UTAMA ---")
+    print("1. Login")
+    print("2. Registrasi")
+    print("3. Keluar")
+    pilihan = input("Pilih menu (1-3): ")
+    return pilihan
+
+def menu_user(nama_user):
+    """Menampilkan menu untuk user biasa"""
+    print(f"\n--- DASHBOARD USER: {nama_user} ---")
+    print("1. Pencatatan Gizi Harian")
+    print("2. Lihat Riwayat Catatan Gizi")
+    print("3. Lihat Total Gizi Hari Ini")
+    print("4. Logout")
+    pilihan = input("Pilih menu (1-4): ")
+    return pilihan
+
+def form_input_gizi():
+    """Form untuk input data gizi harian"""
+    print("\n--- FORM PENCATATAN GIZI HARIAN ---")
+    tanggal = input("Masukkan tanggal (DD-MM-YYYY): ")
+    makanan = input("Nama makanan: ")
+    kalori = input("Jumlah kalori (kkal): ")
+    protein = input("Jumlah protein (gram): ")
+    karbohidrat = input("Jumlah karbohidrat (gram): ")
+    
+    return tanggal, makanan, kalori, protein, karbohidrat
+
+def tampilkan_catatan(catatan_list):
+    """Menampilkan daftar catatan gizi"""
+    if len(catatan_list) == 0:
+        print("\n[!] Belum ada catatan gizi.")
+        return
+    
+    print("\n--- RIWAYAT CATATAN GIZI ---")
+    print("-"*70)
+    print(f"{'ID':<5}{'Tanggal':<15}{'Makanan':<20}{'Kalori':<10}{'Protein':<10}{'Karbo':<10}")
+    print("-"*70)
+    
+    for c in catatan_list:
+        print(f"{c['id']:<5}{c['tanggal']:<15}{c['makanan']:<20}{c['kalori']:<10}{c['protein']:<10}{c['karbohidrat']:<10}")
+    
+    print("-"*70)
+
 # Jalankan program
 if __name__ == "__main__":
     main()
