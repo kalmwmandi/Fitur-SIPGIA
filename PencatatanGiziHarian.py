@@ -181,6 +181,102 @@ def tampilkan_catatan(catatan_list):
     
     print("-"*70)
 
+# ============== PROGRAM UTAMA ==============
+
+def main():
+    """Fungsi utama program"""
+    user_aktif = None
+    
+    while True:
+        tampilkan_header()
+        
+        if user_aktif is None:
+            # Belum login
+            pilihan = menu_utama()
+            
+            if pilihan == "1":
+                # Login
+                print("\n--- LOGIN ---")
+                username = input("Username: ")
+                password = input("Password: ")
+                
+                user = login(username, password)
+                if user:
+                    user_aktif = user
+                    print(f"\n[✓] Login berhasil! Selamat datang, {user['nama']}")
+                else:
+                    print("\n[X] Login gagal! Username atau password salah.")
+                    
+            elif pilihan == "2":
+                # Registrasi
+                print("\n--- REGISTRASI ---")
+                username = input("Username baru: ")
+                password = input("Password: ")
+                nama = input("Nama lengkap: ")
+                
+                if registrasi(username, password, nama):
+                    print("\n[✓] Registrasi berhasil! Silakan login.")
+                else:
+                    print("\n[X] Registrasi gagal! Username sudah digunakan.")
+                    
+            elif pilihan == "3":
+                print("\n[!] Terima kasih telah menggunakan SIPGIA. Sampai jumpa!")
+                break
+            else:
+                print("\n[X] Pilihan tidak valid!")
+        
+        else:
+            # Sudah login - tampilkan menu user
+            pilihan = menu_user(user_aktif["nama"])
+            
+            if pilihan == "1":
+                # Pencatatan Gizi Harian
+                tanggal, makanan, kalori, protein, karbohidrat = form_input_gizi()
+                
+                # Validasi kelengkapan data
+                if validasi_data_gizi(tanggal, makanan, kalori, protein, karbohidrat):
+                    # Simpan ke database
+                    if simpan_catatan_gizi(user_aktif["username"], tanggal, makanan, kalori, protein, karbohidrat):
+                        print("\n[✓] Notifikasi: Anda berhasil menambah data gizi!")
+                    else:
+                        print("\n[X] Gagal menyimpan data.")
+                else:
+                    print("\n[X] Data tidak lengkap atau format angka salah. Silakan coba lagi.")
+                    
+            elif pilihan == "2":
+                # Lihat Riwayat Catatan
+                catatan_user = get_catatan_by_user(user_aktif["username"])
+                tampilkan_catatan(catatan_user)
+                
+            elif pilihan == "3":
+                # Lihat Total Gizi Hari Ini
+                tanggal_hari_ini = input("Masukkan tanggal yang ingin dilihat (DD-MM-YYYY): ")
+                catatan_user = get_catatan_by_user(user_aktif["username"])
+                
+                # Filter berdasarkan tanggal
+                catatan_hari_ini = []
+                for c in catatan_user:
+                    if c["tanggal"] == tanggal_hari_ini:
+                        catatan_hari_ini.append(c)
+                
+                if len(catatan_hari_ini) > 0:
+                    total = hitung_total_gizi_harian(catatan_hari_ini)
+                    print(f"\n--- TOTAL GIZI TANGGAL {tanggal_hari_ini} ---")
+                    print(f"Total Kalori    : {total['total_kalori']} kkal")
+                    print(f"Total Protein   : {total['total_protein']} gram")
+                    print(f"Total Karbohidrat: {total['total_karbohidrat']} gram")
+                else:
+                    print(f"\n[!] Tidak ada catatan untuk tanggal {tanggal_hari_ini}")
+                    
+            elif pilihan == "4":
+                # Logout
+                print(f"\n[!] Logout berhasil. Sampai jumpa, {user_aktif['nama']}!")
+                user_aktif = None
+            else:
+                print("\n[X] Pilihan tidak valid!")
+        
+        input("\nTekan Enter untuk melanjutkan...")
+
 # Jalankan program
 if __name__ == "__main__":
     main()
