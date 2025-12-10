@@ -3,6 +3,7 @@
 # Menggunakan operasi file dan module sederhana
 
 import os
+import loginModule as lgn
 
 # ============== FUNGSI DATABASE (FILE TXT) ==============
 
@@ -75,13 +76,6 @@ def get_catatan_by_user(username, filename="database_catatan_gizi.txt"):
 
 # ============== FUNGSI AUTENTIKASI ==============
 
-def login(username, password):
-    """Fungsi login user"""
-    users = baca_database_user()
-    for user in users:
-        if user["username"] == username and user["password"] == password:
-            return user
-    return None
 
 def registrasi(username, password, nama, role="user"):
     """Fungsi registrasi user baru"""
@@ -196,16 +190,9 @@ def main():
             
             if pilihan == "1":
                 # Login
-                print("\n--- LOGIN ---")
-                username = input("Username: ")
-                password = input("Password: ")
-                
-                user = login(username, password)
-                if user:
-                    user_aktif = user
-                    print(f"\n[✓] Login berhasil! Selamat datang, {user['nama']}")
-                else:
-                    print("\n[X] Login gagal! Username atau password salah.")
+                user_aktif = lgn.login()
+                if user_aktif:
+                    pass
                     
             elif pilihan == "2":
                 # Registrasi
