@@ -1,2 +1,4 @@
 1|budi123|05-12-2025|Nasgor Goreng|350|12|45
 2|aldimardiansah|21-02-2026|sayur bayam|900|900|900
+3|budi123|10-12-2025|Miyam mie ayam|500|18|80
+4|budi123|12-12-2025|Naspad padang|400|25|100

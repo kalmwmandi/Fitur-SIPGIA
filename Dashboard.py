@@ -27,7 +27,7 @@ def dashboard(user):
             laporan(user["username"])
 
         elif pilih == "4":
-            rekomendasi()
+            rekomendasi(user["username"])
 
         elif pilih == "5":
             print("\n[!] Logout berhasil.")
