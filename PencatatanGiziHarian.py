@@ -53,6 +53,17 @@ def baca_catatan_gizi(filename="database_catatan_gizi.txt"):
                 catatan.append(item)
     return catatan
 
+def simpan_catatan_gizi(username, tanggal, makanan, kalori, protein, karbohidrat, filename="database_catatan_gizi.txt"):
+    """Menyimpan catatan gizi baru ke database"""
+    # Generate ID sederhana
+    catatan = baca_catatan_gizi(filename)
+    new_id = len(catatan) + 1
+    
+    file = open(filename, "a")
+    file.write(f"{new_id}|{username}|{tanggal}|{makanan}|{kalori}|{protein}|{karbohidrat}\n")
+    file.close()
+    return True
+
 # Jalankan program
 if __name__ == "__main__":
     main()
