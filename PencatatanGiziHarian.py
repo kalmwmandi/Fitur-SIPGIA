@@ -64,6 +64,16 @@ def simpan_catatan_gizi(username, tanggal, makanan, kalori, protein, karbohidrat
     file.close()
     return True
 
+def get_catatan_by_user(username, filename="database_catatan_gizi.txt"):
+    """Mengambil catatan gizi berdasarkan username"""
+    semua_catatan = baca_catatan_gizi(filename)
+    catatan_user = []
+    for c in semua_catatan:
+        if c["username"] == username:
+            catatan_user.append(c)
+    return catatan_user
+
+
 # Jalankan program
 if __name__ == "__main__":
     main()
