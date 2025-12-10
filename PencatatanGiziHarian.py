@@ -107,6 +107,25 @@ def validasi_data_gizi(tanggal, makanan, kalori, protein, karbohidrat):
         return False
     return True
 
+# ============== FUNGSI HITUNG GIZI ==============
+
+def hitung_total_gizi_harian(catatan_list):
+    """Menghitung total gizi dari list catatan"""
+    total_kalori = 0
+    total_protein = 0
+    total_karbohidrat = 0
+    
+    for c in catatan_list:
+        total_kalori += float(c["kalori"])
+        total_protein += float(c["protein"])
+        total_karbohidrat += float(c["karbohidrat"])
+    
+    return {
+        "total_kalori": total_kalori,
+        "total_protein": total_protein,
+        "total_karbohidrat": total_karbohidrat
+    }
+
 # Jalankan program
 if __name__ == "__main__":
     main()
