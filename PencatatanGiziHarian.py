@@ -73,6 +73,25 @@ def get_catatan_by_user(username, filename="database_catatan_gizi.txt"):
             catatan_user.append(c)
     return catatan_user
 
+# ============== FUNGSI AUTENTIKASI ==============
+
+def login(username, password):
+    """Fungsi login user"""
+    users = baca_database_user()
+    for user in users:
+        if user["username"] == username and user["password"] == password:
+            return user
+    return None
+
+def registrasi(username, password, nama, role="user"):
+    """Fungsi registrasi user baru"""
+    users = baca_database_user()
+    for user in users:
+        if user["username"] == username:
+            return False  # Username sudah ada
+    simpan_user(username, password, nama, role)
+    return True
+
 
 # Jalankan program
 if __name__ == "__main__":
