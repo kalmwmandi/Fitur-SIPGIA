@@ -92,6 +92,20 @@ def registrasi(username, password, nama, role="user"):
     simpan_user(username, password, nama, role)
     return True
 
+# ============== FUNGSI VALIDASI ==============
+
+def validasi_data_gizi(tanggal, makanan, kalori, protein, karbohidrat):
+    """Validasi kelengkapan inputan data gizi"""
+    if tanggal == "" or makanan == "" or kalori == "" or protein == "" or karbohidrat == "":
+        return False
+    # Validasi angka
+    try:
+        float(kalori)
+        float(protein)
+        float(karbohidrat)
+    except:
+        return False
+    return True
 
 # Jalankan program
 if __name__ == "__main__":
