@@ -1,13 +1,13 @@
 from Gizi.PencatatanGizi import lihat_catatan_user
 
-def hitung_selisih_hari(tanggal1, tanggal2):
-    data1 = tanggal1.split("-")
-    data2 = tanggal2.split("-")
+def hitung_selisih_hari(tanggalAwal, tanggalAkhir):
+    tglAwal = tanggalAwal.split("-")
+    tglAkhir = tanggalAkhir.split("-")
     
-    hari1 = int(data1[0])
-    hari2 = int(data2[0])
+    hariAwal = int(tglAwal[0])
+    hariAkhir = int(tglAkhir[0])
     
-    selisih = hari2 - hari1 + 1
+    selisih = hariAkhir - hariAwal + 1
     return selisih
 
 def rekomendasi(username):
@@ -17,17 +17,17 @@ def rekomendasi(username):
     
     if len(catatan_user) == 0:
         print("\n[!] Belum ada catatan gizi.")
-        print("Silakan catat makanan Anda terlebih dahulu!")
+        print("Silakan masuk ke fitur Pencatatan Gizi terlebih dahulu!")
         return
     
     print("\nMasukkan periode yang ingin dicek (maksimal 7 hari):")
-    tanggal_awal = input("Tanggal awal (DD-MM-YYYY): ")
-    tanggal_akhir = input("Tanggal akhir (DD-MM-YYYY): ")
+    tglAwal = input("Tanggal awal (DD-MM-YYYY): ")
+    tglAkhir = input("Tanggal akhir (DD-MM-YYYY): ")
     
-    selisih = hitung_selisih_hari(tanggal_awal, tanggal_akhir)
+    selisih = hitung_selisih_hari(tglAwal, tglAkhir)
     
     if selisih > 7:
-        print("\n[X] Periode terlalu panjang! Maksimal 7 hari (seminggu).")
+        print("\n[X] Periode terlalu panjang! Maksimal 7 hari.")
         return
     
     if selisih < 1:
@@ -38,7 +38,7 @@ def rekomendasi(username):
     for catatan in catatan_user:
         tgl = catatan["tanggal"]
         
-        if tgl >= tanggal_awal and tgl <= tanggal_akhir:
+        if tgl >= tglAwal and tgl <= tglAkhir:
             if tgl not in tanggal_dalam_periode:
                 tanggal_dalam_periode.append(tgl)
     
@@ -48,53 +48,53 @@ def rekomendasi(username):
             catatan_periode.append(catatan)
     
     if len(catatan_periode) == 0:
-        print(f"\n[!] Tidak ada catatan gizi dalam periode {tanggal_awal} sampai {tanggal_akhir}")
+        print(f"\n[!] Tidak ada catatan gizi dalam periode {tglAwal} sampai {tglAkhir}")
         return
     
-    total_kalori = 0
-    total_protein = 0
-    total_karbohidrat = 0
+    totalKkal = 0
+    totalProtein = 0
+    totalKarbo = 0
     
     for catatan in catatan_periode:
-        total_kalori = total_kalori + float(catatan["kalori"])
-        total_protein = total_protein + float(catatan["protein"])
-        total_karbohidrat = total_karbohidrat + float(catatan["karbohidrat"])
+        totalKkal = totalKkal + float(catatan["kalori"])
+        totalProtein = totalProtein + float(catatan["protein"])
+        totalKarbo = totalKarbo + float(catatan["karbohidrat"])
     
-    jumlah_hari = len(tanggal_dalam_periode)
-    print(f"\n=== AKUMULASI NUTRISI ({tanggal_awal} s/d {tanggal_akhir}) ===")
-    print(f"Jumlah hari tercatat: {jumlah_hari} hari")
+    jmlHari = len(tanggal_dalam_periode)
+    print(f"\n=== AKUMULASI NUTRISI ({tglAwal} s/d {tglAkhir}) ===")
+    print(f"Jumlah hari yang memiliki catatan gizi: {jmlHari} hari")
     print(f"\nTotal akumulasi:")
-    print(f"Kalori       : {total_kalori:.0f} kkal")
-    print(f"Protein      : {total_protein:.1f} gram")
-    print(f"Karbohidrat  : {total_karbohidrat:.1f} gram")
+    print(f"Kalori       : {totalKkal:.0f} kkal")
+    print(f"Protein      : {totalProtein:.1f} gram")
+    print(f"Karbohidrat  : {totalKarbo:.1f} gram")
     
-    standar_kalori_mingguan = 2000 * jumlah_hari
-    standar_protein_mingguan = 50 * jumlah_hari
-    standar_karbohidrat_mingguan = 300 * jumlah_hari
+    standardKal = 200 * jmlHari
+    standardProtein = 50 * jmlHari
+    standardKarbo = 300 * jmlHari
     
-    print(f"\nTarget standar nutrisi {jumlah_hari} hari:")
-    print(f"Kalori       : {standar_kalori_mingguan:.0f} kkal")
-    print(f"Protein      : {standar_protein_mingguan:.0f} gram")
-    print(f"Karbohidrat  : {standar_karbohidrat_mingguan:.0f} gram")
+    print(f"\nTarget standar nutrisi {jmlHari} hari:")
+    print(f"Kalori       : {standardKal:.0f} kkal")
+    print(f"Protein      : {standardProtein:.0f} gram")
+    print(f"Karbohidrat  : {standardKarbo:.0f} gram")
     
     print("\n--- REKOMENDASI UNTUK ANDA ---")
     
-    if total_kalori < standar_kalori_mingguan:
-        kurang = standar_kalori_mingguan - total_kalori
+    if totalKkal < standardKal:
+        kurang = standardKal - totalKkal
         print(f"[!] Kalori masih kurang {kurang:.0f} kkal!")
         print("    Saran: Tambah porsi makan atau makan camilan sehat.")
     else:
         print("[OK] Kalori sudah mencukupi kebutuhan mingguan!")
     
-    if total_protein < standar_protein_mingguan:
-        kurang = standar_protein_mingguan - total_protein
+    if totalProtein < standardProtein:
+        kurang = standardProtein - totalProtein
         print(f"[!] Protein masih kurang {kurang:.1f} gram!")
         print("    Saran: Makan telur, ayam, ikan, tempe, atau tahu.")
     else:
         print("[OK] Protein sudah mencukupi kebutuhan mingguan!")
     
-    if total_karbohidrat < standar_karbohidrat_mingguan:
-        kurang = standar_karbohidrat_mingguan - total_karbohidrat
+    if totalKarbo < standardKarbo:
+        kurang = standardKarbo - totalKarbo
         print(f"[!] Karbohidrat masih kurang {kurang:.1f} gram!")
         print("    Saran: Tambah nasi, roti, atau kentang.")
     else:
