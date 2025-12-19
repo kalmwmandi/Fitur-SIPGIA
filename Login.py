@@ -1,3 +1,4 @@
+# login.py
 from Register import baca_database_user
 
 def loginAuth(username, password):
@@ -10,13 +11,20 @@ def loginAuth(username, password):
 
 def login():
     print("\n--- LOGIN ---")
-    username = input("Username: ")
-    password = input("Password: ")
 
-    user = loginAuth(username, password)
-    if user:
-        print(f"\n[✓] Login berhasil! Selamat datang, {user['nama']}")
-        return user
-    else:
-        print("\n[X] Username atau password salah.")
-        return None
+    while True:
+        username = input("Username: ").strip()
+        password = input("Password: ").strip()
+
+        # VALIDASI INPUT KOSONG
+        if not username or not password:
+            print("\n[!] Username dan password tidak boleh kosong.")
+            print("[!] Silakan isi ulang.\n")
+            continue
+
+        user = loginAuth(username, password)
+        if user:
+            print(f"\n[✓] Login berhasil! Selamat datang, {user['nama']}")
+            return user
+        else:
+            print("\n[X] Username atau password salah.\n")

@@ -1,3 +1,4 @@
+# register.py
 import os
 
 DB_USER = "database_user.txt"
@@ -24,19 +25,24 @@ def simpan_user(username, password, nama, role="user"):
     with open(DB_USER, "a") as f:
         f.write(f"{username}|{password}|{nama}|{role}\n")
 
-
 def register():
     print("\n--- REGISTRASI ---")
-    username = input("Username baru: ")
-    password = input("Password: ")
-    nama = input("Nama lengkap: ")
 
-    users = baca_database_user()
-    for u in users:
-        if u["username"] == username:
-            print("\n[X] Username sudah digunakan.")
-            return False
+    while True:
+        username = input("Username baru: ").strip()
+        password = input("Password: ").strip()
+        nama = input("Nama lengkap: ").strip()
 
-    simpan_user(username, password, nama)
-    print("\n[✓] Registrasi berhasil! Silakan login.")
-    return True
+        if not username or not password or not nama:
+            print("\n[!] Semua field wajib diisi. Silakan ulangi.\n")
+            continue
+
+        users = baca_database_user()
+        for u in users:
+            if u["username"] == username:
+                print("\n[X] Username sudah digunakan.\n")
+                return False
+
+        simpan_user(username, password, nama)
+        print("\n[✓] Registrasi berhasil! Silakan login.")
+        return True
