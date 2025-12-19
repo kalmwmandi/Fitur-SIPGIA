@@ -1,5 +1,5 @@
-# login.py
 from Register import baca_database_user
+from getpass import getpass
 
 def loginAuth(username, password):
     users = baca_database_user()
@@ -14,12 +14,10 @@ def login():
 
     while True:
         username = input("Username: ").strip()
-        password = input("Password: ").strip()
+        password = getpass("Password: ")
 
-        # VALIDASI INPUT KOSONG
         if not username or not password:
-            print("\n[!] Username dan password tidak boleh kosong.")
-            print("[!] Silakan isi ulang.\n")
+            print("[!] Username dan password tidak boleh kosong\n")
             continue
 
         user = loginAuth(username, password)
@@ -27,4 +25,4 @@ def login():
             print(f"\n[✓] Login berhasil! Selamat datang, {user['nama']}")
             return user
         else:
-            print("\n[X] Username atau password salah.\n")
+            print("[X] Username atau password salah\n")
