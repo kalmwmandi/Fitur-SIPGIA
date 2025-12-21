@@ -1,3 +1,4 @@
+# register.py
 import os
 from getpass import getpass
 
@@ -30,21 +31,22 @@ def baca_database_user():
     with open(DB_USER, "r") as f:
         for line in f:
             data = line.strip().split("|")
-            if len(data) >= 4:
+            if len(data) >= 5:
                 users.append({
                     "username": data[0],
                     "password": data[1],
                     "nama": data[2],
-                    "role": data[3]
+                    "role": data[3],
+                    "kategori": data[4]
                 })
     return users
 
-def simpan_user(username, password, nama, role="user"):
+def simpan_user(username, password, nama, role="user", kategori="anak"):
     with open(DB_USER, "a") as f:
         f.seek(0, os.SEEK_END)
         if f.tell() > 0:
             f.write("\n")
-        f.write(f"{username}|{password}|{nama}|{role}")
+        f.write(f"{username}|{password}|{nama}|{role}|{kategori}")
 
 
 def register():
@@ -79,5 +81,22 @@ def register():
             continue
         break
 
-    simpan_user(username, password, nama)
+    while True:
+        print("\nDaftar sebagai:")
+        print("1. Anak-anak")
+        print("2. Ibu hamil")
+
+        pilih = input("Pilih (1/2): ")
+
+        if pilih == "1":
+            kategori = "anak"
+            break
+        elif pilih == "2":
+            kategori = "ibu_hamil"
+            break
+        else:
+            print("[X] Pilihan tidak valid\n")
+
+
+    simpan_user(username, password, nama, "user", kategori)
     print("\n[✓] Registrasi berhasil! Silakan login.")

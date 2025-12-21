@@ -1,20 +1,30 @@
+# dashboard.py
 from Gizi.PencatatanGizi import input_gizi, simpan_catatan
 from Gizi.PemantauanGizi import lihat_total
 from Gizi.LaporanGizi import laporan
 from Gizi.RekomendasiNutrisi import rekomendasi
+from Profil.ManajemenProfil import manajemen_profil
 
 
 def dashboard(user):
     role = user["role"]
 
     while True:
-        print(f"\n===== DASHBOARD {role.upper()} : {user['nama']} =====")
+        if role == "user":
+            if user["kategori"] == "ibu_hamil":
+                judul = "IBU HAMIL"
+            else:
+                judul = "ANAK"
+            print(f"\n===== DASHBOARD {judul} : {user['nama']} =====")
+        else:
+            print(f"\n===== DASHBOARD {role.upper()} : {user['nama']} =====")
 
         # ================= USER =================
         if role == "user":
             print("1. Pencatatan Gizi Harian")
             print("2. Laporan Gizi")
-            print("3. Logout")
+            print("3. Manajemen Profil")
+            print("4. Logout")
 
             pilih = input("Pilih menu: ")
 
@@ -27,7 +37,9 @@ def dashboard(user):
                 laporan(user["username"])
 
             elif pilih == "3":
-                print("\n[!] Logout berhasil.")
+                manajemen_profil(user)
+                
+            elif pilih == "4":
                 break
 
             else:
@@ -39,7 +51,8 @@ def dashboard(user):
             print("2. Pemantauan Data Gizi")
             print("3. Laporan Gizi")
             print("4. Rekomendasi Nutrisi")
-            print("5. Logout")
+            print("5. Manajemen Profil")
+            print("6. Logout")
 
             pilih = input("Pilih menu: ")
 
@@ -58,7 +71,9 @@ def dashboard(user):
                 rekomendasi(user["username"])
 
             elif pilih == "5":
-                print("\n[!] Logout berhasil.")
+                manajemen_profil(user)
+                
+            elif pilih == "6":
                 break
 
             else:
@@ -69,7 +84,8 @@ def dashboard(user):
             print("1. Pemantauan Data Gizi")
             print("2. Laporan Gizi")
             print("3. Rekomendasi Nutrisi")
-            print("4. Logout")
+            print("4. Manajemen Profil")
+            print("5. Logout")
 
             pilih = input("Pilih menu: ")
 
@@ -83,7 +99,9 @@ def dashboard(user):
                 rekomendasi(user["username"])
 
             elif pilih == "4":
-                print("\n[!] Logout berhasil.")
+                manajemen_profil(user)
+
+            elif pilih == "5":
                 break
 
             else:
