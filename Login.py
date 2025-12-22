@@ -12,13 +12,16 @@ def loginAuth(username, password):
 
 def login():
     print("\n--- LOGIN ---")
+    MAX_ATTEMPT = 3
+    attempt = 0
 
-    while True:
+    while attempt < MAX_ATTEMPT:
         username = input("Username: ").strip()
         password = getpass("Password: ")
 
         if not username or not password:
             print("[!] Username dan password tidak boleh kosong\n")
+            attempt += 1
             continue
 
         user = loginAuth(username, password)
@@ -26,4 +29,11 @@ def login():
             print(f"\n[✓] Login berhasil! Selamat datang, {user['nama']}")
             return user
         else:
-            print("[X] Username atau password salah\n")
+            attempt += 1
+            sisa = MAX_ATTEMPT - attempt
+            print(f"[X] Username atau password salah ({sisa} percobaan tersisa)\n")
+
+    # kalau sudah 3x salah
+    print("[!] Gagal memproses login.")
+    print("[!] Kembali ke Menu Utama SIPGIA.")
+    return None
