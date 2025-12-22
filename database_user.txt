@@ -1,2 +1,11 @@
-budi123|rahasia123|Budi Nurjaman|user
-aldimardiansah|aldi21|Aldi Mardiansah|user
+budi123|UsepKarbu123!|Asep Nurjaman|user|anak
+aldimardiansah|aldi21|Aldi Mardiansah|admin|-
+userRpl|12345|User RPL|tenaga_kesehatan|-
+Haykal123|Haykal2007_|Januar Haykal|user|anak
+hikal7|Haykal2007!|Januar Haykal|user|anak
+haikal|Haikal2007!|Haykalll|user|anak
+uan|Haykal2007!|Haykallll|user|anak
+haykal|haykaL2007!|hayykkkalll|user|anak
+Akmal|Akmalmwmandi123!|Akmal Baharudin|user|anak
+Jajang1|JajangBeat34!|Muhammad Jajang|user|anak
+KokomKomalasari1|KokomBaskom1!|Kokom Baskom|user|ibu_hamil
