@@ -1,3 +1,4 @@
+# main.py
 from Login import login
 from Register import register
 from Dashboard import dashboard

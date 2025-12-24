@@ -1,6 +1,27 @@
+# register.py
 import os
+from getpass import getpass
 
 DB_USER = "database_user.txt"
+
+def valid_username(username):
+    return username.isalnum()
+
+def valid_password(password):
+    if len(password) < 8:
+        return False
+    if not any(c.isupper() for c in password):
+        return False
+    if not any(c.islower() for c in password):
+        return False
+    if not any(c.isdigit() for c in password):
+        return False
+    if password.isalnum():
+        return False
+    return True
+
+def valid_nama(nama):
+    return all(c.isalpha() or c.isspace() for c in nama)
 
 def baca_database_user():
     if not os.path.exists(DB_USER):
@@ -8,35 +29,74 @@ def baca_database_user():
 
     users = []
     with open(DB_USER, "r") as f:
-        for line in f.readlines():
+        for line in f:
             data = line.strip().split("|")
-            if len(data) >= 4:
+            if len(data) >= 5:
                 users.append({
                     "username": data[0],
                     "password": data[1],
                     "nama": data[2],
-                    "role": data[3]
+                    "role": data[3],
+                    "kategori": data[4]
                 })
     return users
 
-
-def simpan_user(username, password, nama, role="user"):
+def simpan_user(username, password, nama, role="user", kategori="anak"):
     with open(DB_USER, "a") as f:
-        f.write(f"{username}|{password}|{nama}|{role}\n")
+        f.seek(0, os.SEEK_END)
+        if f.tell() > 0:
+            f.write("\n")
+        f.write(f"{username}|{password}|{nama}|{role}|{kategori}")
 
 
 def register():
     print("\n--- REGISTRASI ---")
-    username = input("Username baru: ")
-    password = input("Password: ")
-    nama = input("Nama lengkap: ")
-
     users = baca_database_user()
-    for u in users:
-        if u["username"] == username:
-            print("\n[X] Username sudah digunakan.")
-            return False
 
-    simpan_user(username, password, nama)
+    while True:
+        username = input("Username baru: ").strip()
+
+        if not valid_username(username):
+            print("[X] Username hanya boleh huruf dan angka (tanpa simbol)\n")
+            continue
+
+        if any(u["username"] == username for u in users):
+            print("[X] Username sudah digunakan, silakan ulangi\n")
+            continue
+        break
+
+    while True:
+        password = getpass("Password: ")
+
+        if not valid_password(password):
+            print("[X] Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol\n")
+            continue
+        break
+
+    while True:
+        nama = input("Nama lengkap: ").strip()
+
+        if not valid_nama(nama):
+            print("[X] Nama tidak boleh mengandung angka atau simbol\n")
+            continue
+        break
+
+    while True:
+        print("\nDaftar sebagai:")
+        print("1. Anak-anak")
+        print("2. Ibu hamil")
+
+        pilih = input("Pilih (1/2): ")
+
+        if pilih == "1":
+            kategori = "anak"
+            break
+        elif pilih == "2":
+            kategori = "ibu_hamil"
+            break
+        else:
+            print("[X] Pilihan tidak valid\n")
+
+
+    simpan_user(username, password, nama, "user", kategori)
     print("\n[✓] Registrasi berhasil! Silakan login.")
-    return True
