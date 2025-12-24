@@ -37,22 +37,24 @@ def baca_database_user():
     with open(DB_USER, "r") as f:
         for line in f:
             data = line.strip().split("|")
-            if len(data) >= 5:
+            if len(data) >= 7:
                 users.append({
                     "username": data[0],
                     "password": data[1],
                     "nama": data[2],
                     "role": data[3],
-                    "kategori": data[4]
+                    "kategori": data[4],
+                    "tb": float(data[5]),
+                    "bb": float(data[6])
                 })
     return users
 
-def simpan_user(username, password, nama, role="user", kategori="anak"):
+def simpan_user(username, password, nama, role, kategori, tb, bb):
     with open(DB_USER, "a") as f:
         f.seek(0, os.SEEK_END)
         if f.tell() > 0:
             f.write("\n")
-        f.write(f"{username}|{password}|{nama}|{role}|{kategori}")
+        f.write(f"{username}|{password}|{nama}|{role}|{kategori}|{tb}|{bb}\n")
 
 
 def register():
@@ -108,8 +110,25 @@ def register():
         else:
             print("[X] Pilihan tidak valid\n")
 
+    while True:
+        tb = input("Tinggi badan (cm): ").strip()
+        if not tb.isdigit() or int(tb) < 50 or int(tb) > 250:
+            print("[X] Tinggi badan tidak valid")
+            continue
+        tb = int(tb)
+        break
 
-    simpan_user(username, password, nama, "user", kategori)
+    while True:
+        bb = input("Berat badan (kg): ").strip()
+        try:
+            bb = float(bb)
+            if bb <= 0 or bb > 300:
+                raise ValueError
+            break
+        except:
+            print("[X] Berat badan tidak valid")
+
+    simpan_user(username, password, nama, "user", kategori, tb, bb)
     print("\n[✓] Registrasi berhasil! Silakan login.")
 
 def normalisasi_nama(nama):

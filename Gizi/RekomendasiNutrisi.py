@@ -105,3 +105,7 @@ def rekomendasi(username):
     print("• Minum air putih minimal 8 gelas sehari")
     print("• Makan sayur dan buah setiap hari")
     print("• Olahraga teratur 30 menit per hari")
+
+def hitung_bmi(tb, bb):
+    tb_m = tb / 100
+    return bb / (tb_m ** 2)
