@@ -56,6 +56,10 @@ def register():
     while True:
         username = input("Username baru: ").strip()
 
+        if username == "":
+            print("[X] Username tidak boleh kosong\n")
+            continue
+
         if not valid_username(username):
             print("[X] Username hanya boleh huruf dan angka (tanpa simbol)\n")
             continue
@@ -63,6 +67,7 @@ def register():
         if any(u["username"] == username for u in users):
             print("[X] Username sudah digunakan, silakan ulangi\n")
             continue
+
         break
 
     while True:
