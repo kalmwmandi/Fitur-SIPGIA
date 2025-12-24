@@ -38,18 +38,28 @@ def baca_database_user():
         for line in f:
             data = line.strip().split("|")
             if len(data) >= 7:
-                users.append({
+                user = {
                     "username": data[0],
                     "password": data[1],
                     "nama": data[2],
                     "role": data[3],
                     "kategori": data[4],
-                    "tb": float(data[5]),
-                    "bb": float(data[6])
-                })
+                    "tb": None,
+                    "bb": None
+                }
+
+                if data[3] == "user":
+                    try:
+                        user["tb"] = float(data[5])
+                        user["bb"] = float(data[6])
+                    except:
+                        user["tb"] = None
+                        user["bb"] = None
+
+                users.append(user)
     return users
 
-def simpan_user(username, password, nama, role, kategori, tb, bb):
+def simpan_user(username, password, nama, role, kategori, tb="-", bb="-"):
     with open(DB_USER, "a") as f:
         f.seek(0, os.SEEK_END)
         if f.tell() > 0:
@@ -125,7 +135,7 @@ def register():
             if bb <= 0 or bb > 300:
                 raise ValueError
             break
-        except:
+        except ValueError:
             print("[X] Berat badan tidak valid")
 
     simpan_user(username, password, nama, "user", kategori, tb, bb)

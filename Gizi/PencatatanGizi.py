@@ -119,3 +119,13 @@ def input_gizi(username):
 def lihat_catatan_user(username):
     semua = baca_catatan()
     return [c for c in semua if c["username"] == username]
+
+def ambil_user_unik():
+    semua = baca_catatan()
+    users = []
+
+    for c in semua:
+        if c["username"] not in users:
+            users.append(c["username"])
+
+    return users
