@@ -9,10 +9,10 @@ DB_MAKANAN = "database_makanan.txt"
 # ================= VALIDASI =================
 def valid_tanggal(tanggal):
     try:
-        datetime.strptime(tanggal, "%d-%m-%Y")
-        return True
+        dt = datetime.strptime(tanggal, "%d-%m-%Y")
+        return dt.strftime("%d-%m-%Y")  # auto jadi 01-01-2025
     except ValueError:
-        return False
+        return None
 
 
 # ================= DATABASE MAKANAN =================
@@ -79,9 +79,11 @@ def input_gizi(username):
 
     # INPUT TANGGAL
     while True:
-        tanggal = input("Tanggal (DD-MM-YYYY): ").strip()
-        if not valid_tanggal(tanggal):
-            print("[X] Format tanggal salah! Contoh: 12-12-2025")
+        input_tanggal = input("Tanggal (DD-MM-YYYY): ").strip()
+        tanggal = valid_tanggal(input_tanggal)
+
+        if not tanggal:
+            print("[X] Format tanggal salah! Contoh: 1-1-2025 / 01-01-2025")
             continue
         break
 

@@ -1,5 +1,5 @@
 # register.py
-import os
+import os, re
 from getpass import getpass
 
 DB_USER = "database_user.txt"
@@ -111,3 +111,8 @@ def register():
 
     simpan_user(username, password, nama, "user", kategori)
     print("\n[✓] Registrasi berhasil! Silakan login.")
+
+def normalisasi_nama(nama):
+    # hapus spasi depan-belakang + jadikan 1 spasi
+    nama = re.sub(r"\s+", " ", nama.strip())
+    return nama
