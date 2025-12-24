@@ -29,8 +29,7 @@ def dashboard(user):
             pilih = input("Pilih menu: ")
 
             if pilih == "1":
-                tgl, mkn, kal, pro, kar = input_gizi()
-                simpan_catatan(user["username"], tgl, mkn, kal, pro, kar)
+                input_gizi(user["username"])
                 print("\n[✓] Data berhasil disimpan.")
 
             elif pilih == "2":

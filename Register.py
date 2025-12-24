@@ -5,7 +5,11 @@ from getpass import getpass
 DB_USER = "database_user.txt"
 
 def valid_username(username):
-    return username.isalnum()
+    if not username.isalnum():
+        return False
+    if len(username) < 5 or len(username) > 20:
+        return False
+    return True
 
 def valid_password(password):
     if len(password) < 8:
@@ -21,6 +25,8 @@ def valid_password(password):
     return True
 
 def valid_nama(nama):
+    if len(nama) < 3 or len(nama) > 50:
+        return False
     return all(c.isalpha() or c.isspace() for c in nama)
 
 def baca_database_user():
