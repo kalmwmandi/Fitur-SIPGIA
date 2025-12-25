@@ -1,42 +1,58 @@
-from .PencatatanGizi import lihat_catatan_user, ambil_user_unik, baca_catatan
+# pemantauangizi.py
+from Gizi.PencatatanGizi import lihat_catatan_user, ambil_user_unik, baca_catatan
 from Register import baca_database_user
 
 DB_CATATAN_NAKES = "database_catatan_nakes.txt"
 
 
 def total_gizi(catatan):
+    total_kalori = 0
+    total_protein = 0
+    total_karbo = 0
+
+    for c in catatan:
+        total_kalori = total_kalori + c["kalori"]
+        total_protein = total_protein + c["protein"]
+        total_karbo = total_karbo + c["karbohidrat"]
+
     return {
-        "kalori": sum(c["kalori"] for c in catatan),
-        "protein": sum(c["protein"] for c in catatan),
-        "karbo": sum(c["karbohidrat"] for c in catatan)
+        "kalori": total_kalori,
+        "protein": total_protein,
+        "karbo": total_karbo
     }
 
 
 def pilih_user_gizi():
     users = ambil_user_unik()
 
-    if not users:
+    if len(users) == 0:
         print("[!] Belum ada user yang mengisi gizi.")
         return None
 
     print("\n--- DAFTAR USER ---")
-    for i, u in enumerate(users):
-        print(f"{i+1}. {u}")
+    i = 1
+    for u in users:
+        print(f"{i}. {u}")
+        i = i + 1
 
     while True:
         pilih = input("Pilih user: ")
+
         if pilih.isdigit():
             idx = int(pilih) - 1
-            if 0 <= idx < len(users):
+            if idx >= 0 and idx < len(users):
                 return users[idx]
+
         print("[X] Pilihan tidak valid")
 
 
 def ambil_tb_bb(username):
     users = baca_database_user()
+
     for u in users:
         if u["username"] == username:
             return u["tb"], u["bb"]
+
     return "-", "-"
 
 
@@ -46,20 +62,25 @@ def rekap_gizi_harian(username):
 
     for c in semua:
         if c["username"] == username:
-            tgl = c["tanggal"]
-            if tgl not in rekap:
-                rekap[tgl] = {"kalori": 0, "protein": 0, "karbo": 0}
+            tanggal = c["tanggal"]
 
-            rekap[tgl]["kalori"] += c["kalori"]
-            rekap[tgl]["protein"] += c["protein"]
-            rekap[tgl]["karbo"] += c["karbohidrat"]
+            if tanggal not in rekap:
+                rekap[tanggal] = {
+                    "kalori": 0,
+                    "protein": 0,
+                    "karbo": 0
+                }
+
+            rekap[tanggal]["kalori"] = rekap[tanggal]["kalori"] + c["kalori"]
+            rekap[tanggal]["protein"] = rekap[tanggal]["protein"] + c["protein"]
+            rekap[tanggal]["karbo"] = rekap[tanggal]["karbo"] + c["karbohidrat"]
 
     return rekap
 
 
 def simpan_catatan_nakes(username, tanggal, nama_nakes, catatan):
     with open(DB_CATATAN_NAKES, "a") as f:
-        f.write(f"{username}|{tanggal}|{nama_nakes}|{catatan}\n")
+        f.write(username + "|" + tanggal + "|" + nama_nakes + "|" + catatan + "\n")
 
 
 def pemantauan_gizi_nakes(user_nakes):
@@ -82,9 +103,15 @@ def pemantauan_gizi_nakes(user_nakes):
     print("----------------------------------------")
 
     tanggal_list = []
-    for tgl, g in rekap.items():
+    for tgl in rekap:
+        g = rekap[tgl]
         tanggal_list.append(tgl)
-        print(f"{tgl:<13} | {g['kalori']:.0f}   | {g['protein']:.1f}    | {g['karbo']:.1f}")
+        print(
+            f"{tgl:<13} | "
+            f"{g['kalori']:.0f}   | "
+            f"{g['protein']:.1f}    | "
+            f"{g['karbo']:.1f}"
+        )
 
     while True:
         print("\n1. Tambahkan Catatan")
@@ -93,10 +120,13 @@ def pemantauan_gizi_nakes(user_nakes):
 
         if pilih == "1":
             print("\nPilih tanggal:")
-            for i, tgl in enumerate(tanggal_list):
-                print(f"{i+1}. {tgl}")
+            i = 1
+            for tgl in tanggal_list:
+                print(f"{i}. {tgl}")
+                i = i + 1
 
             pilih_tgl = input("Pilih tanggal: ")
+
             if not pilih_tgl.isdigit():
                 print("[X] Pilihan tidak valid")
                 continue
@@ -125,5 +155,6 @@ def pemantauan_gizi_nakes(user_nakes):
 
         elif pilih == "2":
             break
+
         else:
             print("[X] Pilihan tidak valid")

@@ -1,3 +1,4 @@
+# buatakunadmin.py
 from getpass import getpass
 from Register import (
     valid_username,

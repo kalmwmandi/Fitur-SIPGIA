@@ -10,7 +10,7 @@ DB_MAKANAN = "database_makanan.txt"
 def valid_tanggal(tanggal):
     try:
         dt = datetime.strptime(tanggal, "%d-%m-%Y")
-        return dt.strftime("%d-%m-%Y")  # auto jadi 01-01-2025
+        return dt.strftime("%d-%m-%Y")
     except ValueError:
         return None
 
@@ -22,17 +22,26 @@ def baca_makanan():
         return []
 
     makanan = []
+
     with open(DB_MAKANAN, "r") as f:
         for line in f:
             data = line.strip().split("|")
+
             if len(data) == 5:
+                id_makanan = data[0]
+                nama = data[1]
+                kalori = float(data[2])
+                protein = float(data[3])
+                karbo = float(data[4])
+
                 makanan.append({
-                    "id": data[0],
-                    "nama": data[1],
-                    "kalori": float(data[2]),
-                    "protein": float(data[3]),
-                    "karbo": float(data[4])
+                    "id": id_makanan,
+                    "nama": nama,
+                    "kalori": kalori,
+                    "protein": protein,
+                    "karbo": karbo
                 })
+
     return makanan
 
 
@@ -42,23 +51,34 @@ def baca_catatan():
         return []
 
     hasil = []
+
     with open(DB_CATATAN, "r") as f:
         for line in f:
             data = line.strip().split("|")
+
             if len(data) == 7:
+                id_catatan = data[0]
+                username = data[1]
+                tanggal = data[2]
+                makanan = data[3]
+
                 try:
-                    hasil.append({
-                        "id": data[0],
-                        "username": data[1],
-                        "tanggal": data[2],
-                        "makanan": data[3],
-                        "kalori": float(data[4]),
-                        "protein": float(data[5]),
-                        "karbohidrat": float(data[6]),
-                    })
+                    kalori = float(data[4])
+                    protein = float(data[5])
+                    karbo = float(data[6])
                 except ValueError:
-                    # skip data rusak
                     continue
+
+                hasil.append({
+                    "id": id_catatan,
+                    "username": username,
+                    "tanggal": tanggal,
+                    "makanan": makanan,
+                    "kalori": kalori,
+                    "protein": protein,
+                    "karbohidrat": karbo
+                })
+
     return hasil
 
 
@@ -68,8 +88,13 @@ def simpan_catatan(username, tanggal, makanan):
 
     with open(DB_CATATAN, "a") as f:
         f.write(
-            f"{new_id}|{username}|{tanggal}|{makanan['nama']}|"
-            f"{makanan['kalori']}|{makanan['protein']}|{makanan['karbo']}\n"
+            str(new_id) + "|" +
+            username + "|" +
+            tanggal + "|" +
+            makanan["nama"] + "|" +
+            str(makanan["kalori"]) + "|" +
+            str(makanan["protein"]) + "|" +
+            str(makanan["karbo"]) + "\n"
         )
 
 
@@ -82,23 +107,27 @@ def input_gizi(username):
         input_tanggal = input("Tanggal (DD-MM-YYYY): ").strip()
         tanggal = valid_tanggal(input_tanggal)
 
-        if not tanggal:
+        if tanggal is None:
             print("[X] Format tanggal salah! Contoh: 1-1-2025 / 01-01-2025")
             continue
+
         break
 
     # PILIH MAKANAN
     daftar_makanan = baca_makanan()
-    if not daftar_makanan:
+    if len(daftar_makanan) == 0:
         print("[X] Data makanan kosong.")
         return
 
     print("\n--- DAFTAR MAKANAN ---")
-    for i, m in enumerate(daftar_makanan, start=1):
+    i = 1
+    for m in daftar_makanan:
         print(f"{i}. {m['nama']}")
+        i = i + 1
 
     while True:
         pilih = input("Pilih nomor makanan: ")
+
         if not pilih.isdigit():
             print("[X] Masukkan angka!")
             continue
@@ -118,7 +147,14 @@ def input_gizi(username):
 # ================= LAPORAN =================
 def lihat_catatan_user(username):
     semua = baca_catatan()
-    return [c for c in semua if c["username"] == username]
+    hasil = []
+
+    for c in semua:
+        if c["username"] == username:
+            hasil.append(c)
+
+    return hasil
+
 
 def ambil_user_unik():
     semua = baca_catatan()

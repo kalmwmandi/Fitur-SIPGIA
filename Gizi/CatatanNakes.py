@@ -1,3 +1,4 @@
+# catatannakes.py
 import os
 
 DB_CATATAN_NAKES = "database_catatan_nakes.txt"
