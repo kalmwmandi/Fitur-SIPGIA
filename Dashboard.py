@@ -1,37 +1,95 @@
-from Gizi.PencatatanGizi import input_gizi, simpan_catatan, lihat_catatan_user
-from Gizi.PemantauanGizi import lihat_total
+# dashboard.py
+from Gizi.PencatatanGizi import input_gizi, simpan_catatan
 from Gizi.LaporanGizi import laporan
 from Gizi.RekomendasiNutrisi import rekomendasi
+from Profil.ManajemenProfil import manajemen_profil
+from Gizi.PemantauanGizi import pemantauan_gizi_nakes
+from Gizi.CatatanNakes import lihat_catatan_nakes
+from Profil.BuatAkunAdmin import buat_akun_admin
 
 
 def dashboard(user):
+    role = user["role"]
+
     while True:
-        print(f"\n===== DASHBOARD USER: {user['nama']} =====")
-        print("1. Pencatatan Gizi Harian")
-        print("2. Pemantauan Data Gizi")
-        print("3. Laporan Gizi")
-        print("4. Rekomendasi Nutrisi")
-        print("5. Logout")
+        if role == "user":
+            if user["kategori"] == "ibu_hamil":
+                judul = "IBU HAMIL"
+            else:
+                judul = "ANAK"
+            print(f"\n===== DASHBOARD {judul} : {user['nama']} =====")
+        else:
+            print(f"\n===== DASHBOARD {role.upper()} : {user['nama']} =====")
 
-        pilih = input("Pilih menu: ")
+        # ================= USER =================
+        if role == "user":
+            print("1. Pencatatan Gizi Harian")
+            print("2. Laporan Gizi")
+            print("3. Catatan dari Nakes")
+            print("4. Manajemen Profil")
+            print("5. Logout")
 
-        if pilih == "1":
-            tgl, mkn, kal, pro, kar = input_gizi()
-            simpan_catatan(user["username"], tgl, mkn, kal, pro, kar)
-            print("\n[✓] Data berhasil disimpan.")
+            pilih = input("Pilih menu: ")
 
-        elif pilih == "2":
-            lihat_total(user["username"])
+            if pilih == "1":
+                input_gizi(user["username"])
+                print("\n[✓] Data berhasil disimpan.")
 
-        elif pilih == "3":
-            laporan(user["username"])
+            elif pilih == "2":
+                laporan(user["username"])
 
-        elif pilih == "4":
-            rekomendasi(user["username"])
+            elif pilih == "3":
+                lihat_catatan_nakes(user["username"])
 
-        elif pilih == "5":
-            print("\n[!] Logout berhasil.")
-            break
+            elif pilih == "4":
+                manajemen_profil(user)
+
+            elif pilih == "5":
+                break
+
+            else:
+                print("[X] Pilihan tidak valid.")
+
+        # ================= ADMIN =================
+        elif role == "admin":
+            print("1. Buat Akun")
+            print("2. Manajemen Profil")
+            print("3. Logout")
+
+            pilih = input("Pilih menu: ")
+
+            if pilih == "1":
+                buat_akun_admin()
+
+            elif pilih == "2":
+                manajemen_profil(user)
+
+            elif pilih == "3":
+                break
+
+            else:
+                print("[X] Pilihan tidak valid.")
+
+        # ========== TENAGA KESEHATAN ==========
+        elif role == "tenaga_kesehatan":
+            print("1. Pemantauan Gizi")
+            print("2. Manajemen Profil")
+            print("3. Logout")
+
+            pilih = input("Pilih menu: ")
+
+            if pilih == "1":
+                pemantauan_gizi_nakes(user)
+
+            elif pilih == "2":
+                manajemen_profil(user)
+
+            elif pilih == "3":
+                break
+
+            else:
+                print("[X] Pilihan tidak valid.")
 
         else:
-            print("[X] Pilihan tidak valid.")
+            print("[X] Role tidak dikenali.")
+            break

@@ -1,0 +1,5 @@
+1|Nasi putih|175|4|40
+2|Ayam goreng|250|18|10
+3|Telur rebus|90|6|1
+4|Tempe goreng|120|8|12
+5|Sayur bayam|35|3|7
