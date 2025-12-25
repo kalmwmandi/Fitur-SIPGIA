@@ -1,5 +1,6 @@
 # Profil/ManajemenProfil.py
 from Register import valid_password, baca_database_user
+from getpass import getpass
 
 DB_USER = "database_user.txt"
 
@@ -41,7 +42,14 @@ def manajemen_profil(user):
 
         # ===== UBAH NAMA =====
         elif pilih == "2":
-            nama_baru = input("Nama baru: ").strip()
+            while True:
+                nama_baru = input("Nama baru: ").strip()
+
+                if not valid_nama(nama_baru):
+                    print("[X] Nama hanya boleh huruf dan spasi (3–50 karakter)")
+                    continue
+
+                break
 
             for u in users:
                 if u["username"] == user["username"]:
@@ -51,13 +59,17 @@ def manajemen_profil(user):
             simpan_semua_user(users)
             print("[✓] Nama berhasil diperbarui")
 
+
         # ===== UBAH PASSWORD =====
         elif pilih == "3":
-            password_baru = input("Password baru: ")
+            while True:
+                password_baru = getpass("Password baru: ")
 
-            if not valid_password(password_baru):
-                print("[X] Password tidak memenuhi aturan")
-                continue
+                if not valid_password(password_baru):
+                    print("[X] Password minimal 8 karakter, ada huruf besar, kecil, angka, dan simbol")
+                    continue
+
+                break
 
             for u in users:
                 if u["username"] == user["username"]:
@@ -73,3 +85,8 @@ def manajemen_profil(user):
 
         else:
             print("[X] Pilihan tidak valid")
+
+def valid_nama(nama):
+    if len(nama) < 3 or len(nama) > 50:
+        return False
+    return all(c.isalpha() or c.isspace() for c in nama)
