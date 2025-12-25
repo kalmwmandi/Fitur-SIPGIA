@@ -1,10 +1,9 @@
 # dashboard.py
 from Gizi.PencatatanGizi import input_gizi, simpan_catatan
-from Gizi.LaporanGizi import laporan
+from Gizi.RiwayatPemantauanGizi import riwayat_hasil_pemantauan
 from Gizi.RekomendasiNutrisi import rekomendasi
 from Profil.ManajemenProfil import manajemen_profil
 from Gizi.PemantauanGizi import pemantauan_gizi_nakes
-from Gizi.CatatanNakes import lihat_catatan_nakes
 from Profil.BuatAkunAdmin import buat_akun_admin
 
 
@@ -24,27 +23,22 @@ def dashboard(user):
         # ================= USER =================
         if role == "user":
             print("1. Pencatatan Gizi Harian")
-            print("2. Laporan Gizi")
-            print("3. Catatan dari Nakes")
-            print("4. Manajemen Profil")
-            print("5. Logout")
+            print("2. Riwayat dan Hasil Pemantauan Gizi")
+            print("3. Manajemen Profil")
+            print("4. Logout")
 
             pilih = input("Pilih menu: ")
 
             if pilih == "1":
                 input_gizi(user["username"])
-                print("\n[✓] Data berhasil disimpan.")
 
             elif pilih == "2":
-                laporan(user["username"])
+                riwayat_hasil_pemantauan(user["username"])
 
             elif pilih == "3":
-                lihat_catatan_nakes(user["username"])
-
-            elif pilih == "4":
                 manajemen_profil(user)
 
-            elif pilih == "5":
+            elif pilih == "4":
                 break
 
             else:
