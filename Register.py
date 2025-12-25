@@ -75,11 +75,11 @@ def register():
         username = input("Username baru: ").strip()
 
         if username == "":
-            print("[X] Username tidak boleh kosong\n")
+            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
             continue
 
         if not valid_username(username):
-            print("[X] Username hanya boleh huruf dan angka (tanpa simbol)\n")
+            print("[X] Username hanya boleh huruf dan angka (tanpa simbol), harus terdiri dari 5-20 karakter\n")
             continue
 
         if any(u["username"] == username for u in users):
@@ -91,6 +91,10 @@ def register():
     while True:
         password = getpass("Password: ")
 
+        if password == "":
+            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
         if not valid_password(password):
             print("[X] Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol\n")
             continue
@@ -99,8 +103,12 @@ def register():
     while True:
         nama = input("Nama lengkap: ").strip()
 
+        if nama == "":
+            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
         if not valid_nama(nama):
-            print("[X] Nama tidak boleh mengandung angka atau simbol\n")
+            print("[X] Nama tidak boleh mengandung angka atau simbol, harus terdiri dari 3-50 karakter.\n")
             continue
         break
 
@@ -121,7 +129,7 @@ def register():
             print("[X] Pilihan tidak valid\n")
 
     while True:
-        tb = input("Tinggi badan (cm): ").strip()
+        tb = input("\nTinggi badan (cm): ").strip()
         if not tb.isdigit() or int(tb) < 50 or int(tb) > 250:
             print("[X] Tinggi badan tidak valid")
             continue
