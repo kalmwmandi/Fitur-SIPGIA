@@ -1,5 +1,5 @@
 # Profil/ManajemenProfil.py
-from Register import valid_password, baca_database_user
+from Register import valid_password, baca_database_user, valid_nama
 from getpass import getpass
 
 DB_USER = "database_user.txt"
@@ -8,9 +8,18 @@ DB_USER = "database_user.txt"
 def simpan_semua_user(users):
     with open(DB_USER, "w") as f:
         for u in users:
-            f.write(
-                f"{u['username']}|{u['password']}|{u['nama']}|{u['role']}|{u.get('kategori','-')}\n"
-            )
+            if u["tb"] == None:
+                tb = "-"
+            else:
+                tb = str(u["tb"])
+            
+            if u["bb"] == None:
+                bb = "-"
+            else:
+                bb = str(u["bb"])
+            
+            baris = u["username"] + "|" + u["password"] + "|" + u["nama"] + "|" + u["role"] + "|" + u["kategori"] + "|" + tb + "|" + bb + "\n"
+            f.write(baris)
 
 
 def manajemen_profil(user):
@@ -45,8 +54,12 @@ def manajemen_profil(user):
             while True:
                 nama_baru = input("Nama baru: ").strip()
 
+                if nama_baru == "":
+                    print("[X] Nama lengkap baru tidak boleh kosong.\n")
+                    continue
+
                 if not valid_nama(nama_baru):
-                    print("[X] Nama hanya boleh huruf dan spasi (3–50 karakter)")
+                    print("[X] Nama tidak boleh mengandung angka atau simbol, harus terdiri dari 3-50 karakter.\n")
                     continue
 
                 break
@@ -65,8 +78,12 @@ def manajemen_profil(user):
             while True:
                 password_baru = getpass("Password baru: ")
 
+                if password_baru == "":
+                    print("[X] Password baru tidak boleh kosong.\n")
+                    continue
+
                 if not valid_password(password_baru):
-                    print("[X] Password minimal 8 karakter, ada huruf besar, kecil, angka, dan simbol")
+                    print("[X] Password minimal 8 karakter, ada huruf besar, kecil, angka, dan simbol\n")
                     continue
 
                 break
@@ -85,8 +102,3 @@ def manajemen_profil(user):
 
         else:
             print("[X] Pilihan tidak valid")
-
-def valid_nama(nama):
-    if len(nama) < 3 or len(nama) > 50:
-        return False
-    return all(c.isalpha() or c.isspace() for c in nama)
