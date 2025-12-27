@@ -33,12 +33,16 @@ def buat_akun_admin():
     while True:
         username = input("Username: ").strip()
 
+        if username == "":
+            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
         if not valid_username(username):
-            print("[X] Username harus 5–20 huruf/angka")
+            print("[X] Username hanya boleh huruf dan angka (tanpa simbol), harus terdiri dari 5-20 karakter\n")
             continue
 
         if any(u["username"] == username for u in users):
-            print("[X] Username sudah digunakan")
+            print("[X] Username sudah digunakan, silakan ulangi\n")
             continue
 
         break
@@ -47,8 +51,12 @@ def buat_akun_admin():
     while True:
         password = getpass("Password: ")
 
+        if password == "":
+            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
         if not valid_password(password):
-            print("[X] Password tidak memenuhi aturan")
+            print("[X] Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol\n")
             continue
 
         break
@@ -57,8 +65,12 @@ def buat_akun_admin():
     while True:
         nama = input("Nama lengkap: ").strip()
 
+        if nama == "":
+            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
         if not valid_nama(nama):
-            print("[X] Nama tidak valid")
+            print("[X] Nama tidak boleh mengandung angka atau simbol, harus terdiri dari 3-50 karakter.\n")
             continue
 
         break
