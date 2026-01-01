@@ -28,43 +28,57 @@ def buat_akun_admin():
         elif pilih == "3":
             return
         else:
-            print("[X] Pilihan tidak valid")
+            print(">> Pilihan tidak valid.")
 
-    # ===== USERNAME =====
     while True:
         username = input("Username: ").strip()
 
-        if not valid_username(username):
-            print("[X] Username harus 5–20 huruf/angka")
+        if username == "":
+            print(">> Username, password, atau nama lengkap tidak boleh kosong.\n")
             continue
 
-        if any(u["username"] == username for u in users):
-            print("[X] Username sudah digunakan")
+        if valid_username(username) == False:
+            print(">> Username hanya boleh huruf dan angka (tanpa simbol), harus terdiri dari 5-20 karakter.\n")
+            continue
+
+        userSudahAda = False
+        for u in users:
+            if u["username"] == username:
+                userSudahAda = True
+                break
+        
+        if userSudahAda == True:
+            print(">> Username sudah digunakan, silakan ulangi.\n")
             continue
 
         break
 
-    # ===== PASSWORD =====
     while True:
         password = getpass("Password: ")
 
-        if not valid_password(password):
-            print("[X] Password tidak memenuhi aturan")
+        if password == "":
+            print(">> Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
+        if valid_password(password) == False:
+            print(">> Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol.\n")
             continue
 
         break
 
-    # ===== NAMA =====
     while True:
         nama = input("Nama lengkap: ").strip()
 
-        if not valid_nama(nama):
-            print("[X] Nama tidak valid")
+        if nama == "":
+            print(">> Username, password, atau nama lengkap tidak boleh kosong.\n")
+            continue
+
+        if valid_nama(nama) == False:
+            print(">> Nama tidak boleh mengandung angka atau simbol, harus terdiri dari 3-50 karakter.\n")
             continue
 
         break
 
-    # ADMIN / NAKES TIDAK PUNYA KATEGORI, TB, BB
     simpan_user(username, password, nama, role, "-", "-", "-")
 
-    print(f"\n[✓] Akun {role.upper()} berhasil dibuat!")
+    print(f"\n>> Akun {role.upper()} berhasil dibuat!.")

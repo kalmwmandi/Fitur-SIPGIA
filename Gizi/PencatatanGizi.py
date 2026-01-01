@@ -1,32 +1,54 @@
-# pencatatangizi.py
 from datetime import datetime
 import os
 
 DB_CATATAN = "database_catatan_gizi.txt"
 DB_MAKANAN = "database_makanan.txt"
 
-
-# ================= VALIDASI =================
 def valid_tanggal(tanggal):
-    try:
-        dt = datetime.strptime(tanggal, "%d-%m-%Y")
-        return dt.strftime("%d-%m-%Y")
-    except ValueError:
+    if len(tanggal) != 10 or tanggal[2] != '-' or tanggal[5] != '-':
         return None
 
+    for i in [0, 1, 3, 4, 6, 7, 8, 9]:
+        if tanggal[i] < '0' or tanggal[i] > '9':
+            return None
 
-# ================= DATABASE MAKANAN =================
+    hari = int(tanggal[0:2])
+    bulan = int(tanggal[3:5])
+    tahun = int(tanggal[6:10])
+
+    if bulan < 1 or bulan > 12:
+        return None
+    
+    if bulan in [1, 3, 5, 7, 8, 10, 12]:
+        maxHari = 31
+
+    elif bulan in [4, 6, 9, 11]:
+        maxHari = 30
+
+    else:  
+        if (tahun % 400 == 0) or (tahun % 4 == 0 and tahun % 100 != 0):
+            maxHari = 29
+        else:
+            maxHari = 28
+
+    if hari < 1 or hari > maxHari:
+        return None
+
+    if datetime(tahun, bulan, hari).strftime("%d-%m-%Y") != tanggal:
+        return None
+
+    return tanggal
+
 def baca_makanan():
-    if not os.path.exists(DB_MAKANAN):
-        print("[X] Database makanan tidak ditemukan!")
+    if os.path.exists(DB_MAKANAN) == False:
+        print(">> Database makanan tidak ditemukan!.")
         return []
 
     makanan = []
 
     with open(DB_MAKANAN, "r") as f:
-        for line in f:
-            data = line.strip().split("|")
-
+        for baris in f:
+            data = baris.strip().split("|")
             if len(data) == 5:
                 id_makanan = data[0]
                 nama = data[1]
@@ -44,124 +66,133 @@ def baca_makanan():
 
     return makanan
 
-
-# ================= DATABASE CATATAN =================
 def baca_catatan():
-    if not os.path.exists(DB_CATATAN):
+    if os.path.exists(DB_CATATAN) == False:
         return []
 
     hasil = []
 
     with open(DB_CATATAN, "r") as f:
-        for line in f:
-            data = line.strip().split("|")
-
+        for baris in f:
+            data = baris.strip().split("|")
             if len(data) == 7:
-                id_catatan = data[0]
-                username = data[1]
-                tanggal = data[2]
-                makanan = data[3]
-
-                try:
-                    kalori = float(data[4])
-                    protein = float(data[5])
-                    karbo = float(data[6])
-                except ValueError:
-                    continue
-
-                hasil.append({
-                    "id": id_catatan,
-                    "username": username,
-                    "tanggal": tanggal,
-                    "makanan": makanan,
-                    "kalori": kalori,
-                    "protein": protein,
-                    "karbohidrat": karbo
-                })
-
+                kaloriValid = True
+                for kal in data[4]:
+                    if kal < '0' or kal > '9':
+                        if kal != '.':
+                            kaloriValid = False
+                            break
+                
+                proteinValid = True
+                for pro in data[5]:
+                    if pro < '0' or pro > '9':
+                        if pro != '.':
+                            proteinValid = False
+                            break
+                
+                karboValid = True
+                for kar in data[6]:
+                    if kar < '0' or kar > '9':
+                        if kar != '.':
+                            karboValid = False
+                            break
+                
+                if kaloriValid == True and proteinValid == True and karboValid == True:
+                    hasil.append({
+                        "id": data[0],
+                        "username": data[1],
+                        "tanggal": data[2],
+                        "makanan": data[3],
+                        "kalori": float(data[4]),
+                        "protein": float(data[5]),
+                        "karbohidrat": float(data[6])
+                    })
     return hasil
-
 
 def simpan_catatan(username, tanggal, makanan):
     semua = baca_catatan()
-    new_id = len(semua) + 1
+    idBaru = len(semua) + 1
 
     with open(DB_CATATAN, "a") as f:
         f.write(
-            str(new_id) + "|" +
-            username + "|" +
-            tanggal + "|" +
-            makanan["nama"] + "|" +
-            str(makanan["kalori"]) + "|" +
-            str(makanan["protein"]) + "|" +
-            str(makanan["karbo"]) + "\n"
+            f"{idBaru}|{username}|{tanggal}|{makanan['nama']}|"
+            f"{makanan['kalori']}|{makanan['protein']}|{makanan['karbo']}\n"
         )
 
-
-# ================= INPUT GIZI =================
 def input_gizi(username):
     print("\n--- INPUT GIZI HARIAN ---")
 
-    # INPUT TANGGAL
     while True:
-        input_tanggal = input("Tanggal (DD-MM-YYYY): ").strip()
-        tanggal = valid_tanggal(input_tanggal)
+        inputanTanggal = input("Tanggal (DD-MM-YYYY): ").strip()
+        tanggal = valid_tanggal(inputanTanggal)
 
-        if tanggal is None:
-            print("[X] Format tanggal salah! Contoh: 1-1-2025 / 01-01-2025")
+        if tanggal == None:
+            print(">> Format tanggal salah! Contoh: 1-1-2025 / 01-01-2025.")
             continue
 
         break
 
-    # PILIH MAKANAN
-    daftar_makanan = baca_makanan()
-    if len(daftar_makanan) == 0:
-        print("[X] Data makanan kosong.")
+    daftarMakanan = baca_makanan()
+    if len(daftarMakanan) == 0:
+        print(">> Data makanan kosong.")
         return
 
     print("\n--- DAFTAR MAKANAN ---")
-    i = 1
-    for m in daftar_makanan:
-        print(f"{i}. {m['nama']}")
-        i = i + 1
+    nomor = 1
+    for m in daftarMakanan:
+        print(f"{nomor}. {m['nama']}")
+        nomor += 1
 
     while True:
         pilih = input("Pilih nomor makanan: ")
 
-        if not pilih.isdigit():
-            print("[X] Masukkan angka!")
+        if len(pilih) == 0:
+            print(">> Masukkan angka!.")
             continue
 
-        idx = int(pilih) - 1
-        if idx < 0 or idx >= len(daftar_makanan):
-            print("[X] Pilihan tidak valid!")
+        pilihValid = True
+        for i in pilih:
+            if i < '0' or i > '9':
+                pilihValid = False
+                break
+
+        if pilihValid == False:
+            print(">> Pilihan tidak valid!.")
             continue
 
-        makanan = daftar_makanan[idx]
+        nomor = int(pilih) - 1
+        if nomor < 0 or nomor >= len(daftarMakanan):
+            print(">> Pilihan tidak valid.")
+            continue
+
+        makanan = daftarMakanan[nomor]
         break
 
     simpan_catatan(username, tanggal, makanan)
-    print("\n[✓] Data gizi berhasil disimpan.")
+    print("\n>> Data gizi berhasil disimpan.")
 
-
-# ================= LAPORAN =================
 def lihat_catatan_user(username):
     semua = baca_catatan()
     hasil = []
-
-    for c in semua:
-        if c["username"] == username:
-            hasil.append(c)
-
+    
+    for i in semua:
+        if i["username"] == username:
+            hasil.append(i)
+    
     return hasil
-
 
 def ambil_user_unik():
     semua = baca_catatan()
     users = []
 
-    for c in semua:
-        if c["username"] not in users:
-            users.append(c["username"])
+    for i in semua:
+        sudahAda = False
+        for u in users:
+            if u == i["username"]:
+                sudahAda = True
+                break
+        
+        if sudahAda == False:
+            users.append(i["username"])
 
     return users

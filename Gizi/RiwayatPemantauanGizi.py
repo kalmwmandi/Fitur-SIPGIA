@@ -1,73 +1,81 @@
-# riwayatpemantauangizi.py
-from Gizi.PencatatanGizi import lihat_catatan_user
+from .PencatatanGizi import lihat_catatan_user
 import os
 
 DB_CATATAN_NAKES = "database_catatan_nakes.txt"
 
 
 def ambil_catatan_nakes(username, tanggal):
-    if not os.path.exists(DB_CATATAN_NAKES):
+    if os.path.exists(DB_CATATAN_NAKES) == False:
         return None
 
     with open(DB_CATATAN_NAKES, "r") as f:
-        for line in f:
-            data = line.strip().split("|")
-
+        for baris in f:
+            data = baris.strip().split("|")
             if len(data) == 4:
-                u = data[0]
+                user = data[0]
                 tgl = data[1]
                 nakes = data[2]
                 catatan = data[3]
-
-                if u == username and tgl == tanggal:
-                    return {
-                        "nakes": nakes,
-                        "catatan": catatan
-                    }
-
+                
+                if user == username and tgl == tanggal:
+                    hasil = {}
+                    hasil["nakes"] = nakes
+                    hasil["catatan"] = catatan
+                    return hasil
     return None
 
+def bubbleSort(array):
+    n = len(array)
+    for i in range(n):
+        for j in range(n - i - 1):
+            if array[j] > array[j + 1]:
+                k = array[j]
+                array[j] = array[j + 1]
+                array[j + 1] = k
+    return array
 
 def riwayat_hasil_pemantauan(username):
     data = lihat_catatan_user(username)
 
     if len(data) == 0:
-        print("\n[!] Belum ada catatan gizi.")
+        print(">> Belum ada catatan gizi.")
         return
 
-    print("\n========== Riwayat dan Hasil Pemantauan Gizi ==========")
+    print("\n--- Riwayat dan Hasil Pemantauan Gizi ---")
+    
+    dataDiTanggal = {}
+    for i in data:
+        tgl = i['tanggal']
 
-    # ================= KELOMPOKKAN DATA PER TANGGAL =================
-    data_per_tanggal = {}
+        sudahAda = False
+        for tanggal in dataDiTanggal:
+            if tanggal == tgl:
+                sudahAda = True
+                break
+        
+        if sudahAda == False:
+            dataDiTanggal[tgl] = []
+        
+        dataDiTanggal[tgl].append(i)
+    
+    listTanggal = []
+    for tanggal in dataDiTanggal:
+        listTanggal.append(tanggal)
 
-    for d in data:
-        tanggal = d["tanggal"]
+    listTanggal = bubbleSort(listTanggal)
 
-        if tanggal not in data_per_tanggal:
-            data_per_tanggal[tanggal] = []
-
-        data_per_tanggal[tanggal].append(d)
-
-    # ================= URUTKAN TANGGAL =================
-    daftar_tanggal = []
-    for tgl in data_per_tanggal:
-        daftar_tanggal.append(tgl)
-
-    daftar_tanggal.sort()
-
-    # ================= TAMPILKAN DATA =================
-    for tanggal in daftar_tanggal:
+    for tanggal in listTanggal:
         print(f"\nRiwayat Pencatatan Gizi Tanggal {tanggal}:")
-
-        for d in data_per_tanggal[tanggal]:
+        
+        for hasil in dataDiTanggal[tanggal]:
             print(
-                f" • {d['makanan']} | "
-                f"Kalori: {d['kalori']} kkal | "
-                f"Protein: {d['protein']} g | "
-                f"Karbohidrat: {d['karbohidrat']} g"
+                f" • {hasil['makanan']} | "
+                f"Kalori: {hasil['kalori']} kkal | "
+                f"Protein: {hasil['protein']} g | "
+                f"Karbohidrat: {hasil['karbohidrat']} g"
             )
 
-        catatan_nakes = ambil_catatan_nakes(username, tanggal)
-        if catatan_nakes:
-            print(f"Rekomendasi atau Catatan dari {catatan_nakes['nakes']}:")
-            print(f"     {catatan_nakes['catatan']}")
+        catatanNakes = ambil_catatan_nakes(username, tanggal)
+        if catatanNakes:
+            print(f"Rekomendasi atau Catatan dari {catatanNakes['nakes']}:")
+            print(f"    {catatanNakes['catatan']}")

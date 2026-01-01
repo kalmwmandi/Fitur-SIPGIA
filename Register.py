@@ -1,33 +1,84 @@
-# register.py
-import os, re
+import os
 from getpass import getpass
 
 DB_USER = "database_user.txt"
 
 def valid_username(username):
-    if not username.isalnum():
-        return False
     if len(username) < 5 or len(username) > 20:
         return False
+    
+    for i in username:
+        if i >= 'A' and i <= 'Z':
+            continue
+        if i >= 'a' and i <= 'z':
+            continue
+        if i >= '0' and i <= '9':
+            continue
+        return False
+    
     return True
 
 def valid_password(password):
     if len(password) < 8:
         return False
-    if not any(c.isupper() for c in password):
+    
+    adaHurufBesar = False
+    for i in password:
+        if i >= 'A' and i <= 'Z':
+            adaHurufBesar = True
+            break
+    
+    if adaHurufBesar == False:
         return False
-    if not any(c.islower() for c in password):
+    
+    adaHurufKecil = False
+    for i in password:
+        if i >= 'a' and i <= 'z':
+            adaHurufKecil = True
+            break
+    
+    if adaHurufKecil == False:
         return False
-    if not any(c.isdigit() for c in password):
+    
+    adaAngka = False
+    for i in password:
+        if i >= '0' and i <= '9':
+            adaAngka = True
+            break
+    
+    if adaAngka == False:
         return False
-    if password.isalnum():
+    
+    adaSimbol = False
+    for i in password:
+        if i >= 'A' and i <= 'Z':
+            continue
+        if i >= 'a' and i <= 'z':
+            continue
+        if i >= '0' and i <= '9':
+            continue
+        adaSimbol = True
+        break
+    
+    if adaSimbol == False:
         return False
+    
     return True
 
 def valid_nama(nama):
     if len(nama) < 3 or len(nama) > 50:
         return False
-    return all(c.isalpha() or c.isspace() for c in nama)
+    
+    for i in nama:
+        if i >= 'A' and i <= 'Z':
+            continue
+        if i >= 'a' and i <= 'z':
+            continue
+        if i == ' ':
+            continue
+        return False
+    
+    return True
 
 def baca_database_user():
     if not os.path.exists(DB_USER):
@@ -35,8 +86,8 @@ def baca_database_user():
 
     users = []
     with open(DB_USER, "r") as f:
-        for line in f:
-            data = line.strip().split("|")
+        for baris in f:
+            data = baris.strip().split("|")
             if len(data) >= 7:
                 user = {
                     "username": data[0],
@@ -49,23 +100,37 @@ def baca_database_user():
                 }
 
                 if data[3] == "user":
-                    try:
-                        user["tb"] = float(data[5])
-                        user["bb"] = float(data[6])
-                    except:
-                        user["tb"] = None
-                        user["bb"] = None
+                    if data[5] != "-" and data[6] != "-":
+                        tbValid = True
+                        for i in data[5]:
+                            if i >= '0' and i <= '9':
+                                continue
+                            if i == '.':
+                                continue
+                            tbValid = False
+                            break
+                        
+                        bbValid = True
+                        for i in data[6]:
+                            if i >= '0' and i <= '9':
+                                continue
+                            if i == '.':
+                                continue
+                            bbValid = False
+                            break
+                        
+                        if tbValid == True and bbValid == True:
+                            user["tb"] = float(data[5])
+                            user["bb"] = float(data[6])
 
                 users.append(user)
     return users
 
 def simpan_user(username, password, nama, role, kategori, tb="-", bb="-"):
     with open(DB_USER, "a") as f:
-        f.seek(0, os.SEEK_END)
-        if f.tell() > 0:
-            f.write("\n")
-        f.write(f"{username}|{password}|{nama}|{role}|{kategori}|{tb}|{bb}\n")
-
+        baris = username + "|" + password + "|" + nama + "|" + role + "|"
+        baris = baris + kategori + "|" + str(tb) + "|" + str(bb) + "\n"
+        f.write(baris)
 
 def register():
     print("\n--- REGISTRASI ---")
@@ -75,15 +140,21 @@ def register():
         username = input("Username baru: ").strip()
 
         if username == "":
-            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            print(">> Username, password, atau nama lengkap tidak boleh kosong.\n")
             continue
 
         if not valid_username(username):
-            print("[X] Username hanya boleh huruf dan angka (tanpa simbol), harus terdiri dari 5-20 karakter\n")
+            print(">> Username hanya boleh huruf dan angka (tanpa simbol), harus terdiri dari 5-20 karakter.\n")
             continue
 
-        if any(u["username"] == username for u in users):
-            print("[X] Username sudah digunakan, silakan ulangi\n")
+        usernameAda = False
+        for i in users:
+            if i["username"] == username:
+                usernameAda = True
+                break
+
+        if usernameAda == True:
+            print(">> Username sudah digunakan, silakan ulangi.\n")
             continue
 
         break
@@ -92,11 +163,11 @@ def register():
         password = getpass("Password: ")
 
         if password == "":
-            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            print(">> Username, password, atau nama lengkap tidak boleh kosong.\n")
             continue
 
         if not valid_password(password):
-            print("[X] Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol\n")
+            print(">> Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol.\n")
             continue
         break
 
@@ -104,11 +175,11 @@ def register():
         nama = input("Nama lengkap: ").strip()
 
         if nama == "":
-            print("[X] Username, password, atau nama lengkap tidak boleh kosong.\n")
+            print(">> Username, password, atau nama lengkap tidak boleh kosong.\n")
             continue
 
         if not valid_nama(nama):
-            print("[X] Nama tidak boleh mengandung angka atau simbol, harus terdiri dari 3-50 karakter.\n")
+            print(">> Nama tidak boleh mengandung angka atau simbol, harus terdiri dari 3-50 karakter.\n")
             continue
         break
 
@@ -126,30 +197,59 @@ def register():
             kategori = "ibu_hamil"
             break
         else:
-            print("[X] Pilihan tidak valid\n")
+            print(">> Pilihan tidak valid.\n")
 
     while True:
         tb = input("\nTinggi badan (cm): ").strip()
-        if not tb.isdigit() or int(tb) < 50 or int(tb) > 250:
-            print("[X] Tinggi badan tidak valid")
+        
+        tbValid = True
+        for i in tb:
+            if i >= '0' and i <= '9':
+                continue
+            tbValid = False
+            break
+        
+        if tbValid == False or len(tb) == 0:
+            print(">> Tinggi badan tidak valid.")
             continue
-        tb = int(tb)
+        
+        tbAngka = int(tb)
+        if tbAngka < 50 or tbAngka > 250:
+            print(">> Tinggi badan tidak valid.")
+            continue
+        
+        tb = tbAngka
         break
 
     while True:
         bb = input("Berat badan (kg): ").strip()
-        try:
-            bb = float(bb)
-            if bb <= 0 or bb > 300:
-                raise ValueError
+        
+        bbValid = True
+        jumlahTitik = 0
+        
+        for i in bb:
+            if i >= '0' and i <= '9':
+                continue
+            if i == '.':
+                jumlahTitik = jumlahTitik + 1
+                continue
+            bbValid = False
             break
-        except ValueError:
-            print("[X] Berat badan tidak valid")
+        
+        if jumlahTitik > 1:
+            bbValid = False
+        
+        if bbValid == False or len(bb) == 0:
+            print(">> Berat badan tidak valid.")
+            continue
+        
+        bbAngka = float(bb)
+        if bbAngka <= 0 or bbAngka > 300:
+            print(">> Berat badan tidak valid.")
+            continue
+        
+        bb = bbAngka
+        break
 
     simpan_user(username, password, nama, "user", kategori, tb, bb)
-    print("\n[✓] Registrasi berhasil! Silakan login.")
-
-def normalisasi_nama(nama):
-    # hapus spasi depan-belakang + jadikan 1 spasi
-    nama = re.sub(r"\s+", " ", nama.strip())
-    return nama
+    print("\n>> Registrasi berhasil! Silakan login.")
