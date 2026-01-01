@@ -1,4 +1,3 @@
-# register.py
 import os
 from getpass import getpass
 
