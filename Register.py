@@ -167,7 +167,7 @@ def register():
             continue
 
         if not valid_password(password):
-            print(">> Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol.\n")
+            print(">> Password minimal 8 karakter, harus ada huruf besar, kecil, angka, simbol, dan menggunakan spasi.\n")
             continue
         break
 
