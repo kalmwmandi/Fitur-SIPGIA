@@ -1,4 +1,15 @@
-Haykal123|Haykal2007!|Januar Haykal|user|anak|165|55
+Haykal123|Haykal2007!|Januar Haykal|user|anak|165.0|55.0
 nakes01|Nakes123!|Bidan Siti|tenaga_kesehatan|-|-|-
-admin01|Admin123!|Admin SIPGIA|admin|-|-|-
-NakesKal|Haykalnakes7!|Haykal Nakes|tenaga_kesehatan|-|-|-
+admin01|Admin1234%|Admin Utama SIPGIA|admin|-|-|-
+NakesKal|Haykalnakes7!|Nakes Haykal Firdaus|tenaga_kesehatan|-|-|-
+RPLFire1|Rafamirza123!|Rafa Mirza|user|anak|50.0|20.0
+RPLFire2|Priska123!|Admin Satu SIPGIA|user|ibu_hamil|160.0|50.0
+RPLfire|RPL Fire @ 123|Lian|user|anak|150.0|60.0
+adminRay01|Rayadmin123!|Admin Ray|admin|-|-|-
+NakesAldi21|AldiNakes123!|Nakes AI|tenaga_kesehatan|-|-|-
+asdada|Rayadmin123!|Raykedua|admin|-|-|-
+2132131231|rayadminA123!|RayCihuy|admin|-|-|-
+121311|Ray02!!!|Berlianda|admin|-|-|-
+Ray123|Ray5432!|Ray Id|user|anak|172.0|65.0
+AdminDemo|Admin1234%|Admin Demo|admin|-|-|-
+NakesDemo|Nakes1234%|Nakes Demo|tenaga_kesehatan|-|-|-
