@@ -1,3 +1,4 @@
+import os
 from .PencatatanGizi import ambil_user_unik, baca_catatan
 from Register import baca_database_user
 
@@ -92,9 +93,46 @@ def rekap_gizi_harian(username):
     return rekap
 
 
+def baca_catatan_nakes():
+    if os.path.exists(DB_CATATAN_NAKES) == False:
+        return []
+    
+    hasil = []
+    with open(DB_CATATAN_NAKES, "r") as f:
+        for baris in f:
+            data = baris.strip().split("|")
+            if len(data) == 4:
+                hasil.append({
+                    "username": data[0],
+                    "tanggal": data[1],
+                    "nama_nakes": data[2],
+                    "catatan": data[3]
+                })
+    return hasil
+
+
 def simpan_catatan_nakes(username, tanggal, namaNakes, catatan):
-    with open(DB_CATATAN_NAKES, "a") as f:
-        f.write(f"{username}|{tanggal}|{namaNakes}|{catatan}\n")
+    semua = baca_catatan_nakes()
+    
+    sudahAda = False
+    for i in range(len(semua)):
+        if semua[i]["username"] == username and semua[i]["tanggal"] == tanggal:
+            semua[i]["nama_nakes"] = namaNakes
+            semua[i]["catatan"] = catatan
+            sudahAda = True
+            break
+    
+    if sudahAda == False:
+        semua.append({
+            "username": username,
+            "tanggal": tanggal,
+            "nama_nakes": namaNakes,
+            "catatan": catatan
+        })
+    
+    with open(DB_CATATAN_NAKES, "w") as f:
+        for c in semua:
+            f.write(f"{c['username']}|{c['tanggal']}|{c['nama_nakes']}|{c['catatan']}\n")
 
 
 def pemantauan_gizi_nakes(userNakes):
