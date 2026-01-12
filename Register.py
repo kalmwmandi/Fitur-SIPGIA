@@ -7,13 +7,19 @@ def valid_username(username):
     if len(username) < 5 or len(username) > 20:
         return False
     
+    adaHuruf = False
     for i in username:
         if i >= 'A' and i <= 'Z':
+            adaHuruf = True
             continue
         if i >= 'a' and i <= 'z':
+            adaHuruf = True
             continue
         if i >= '0' and i <= '9':
             continue
+        return False
+    
+    if adaHuruf == False:
         return False
     
     return True
@@ -168,6 +174,10 @@ def register():
 
         if not valid_password(password):
             print(">> Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol.\n")
+            continue
+
+        if "|" in password:
+            print(">> Password tidak boleh mengandung karakter '|'.\n")
             continue
         break
 

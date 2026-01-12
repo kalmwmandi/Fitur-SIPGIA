@@ -79,6 +79,10 @@ def manajemen_profil(user):
                 if valid_password(passwordBaru) == False:
                     print(">> Password minimal 8 karakter, ada huruf besar, kecil, angka, dan simbol.\n")
                     continue
+                
+                if "|" in passwordBaru:
+                    print(">> Password tidak boleh mengandung karakter '|'.\n")
+                    continue
 
                 break
 

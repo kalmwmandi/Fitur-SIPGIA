@@ -63,6 +63,10 @@ def buat_akun_admin():
             print(">> Password minimal 8 karakter, harus ada huruf besar, kecil, angka, dan simbol.\n")
             continue
 
+        if "|" in password:
+            print(">> Password tidak boleh mengandung karakter '|'.\n")
+            continue
+
         break
 
     while True:

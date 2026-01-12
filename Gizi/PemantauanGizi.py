@@ -4,24 +4,6 @@ from Register import baca_database_user
 
 DB_CATATAN_NAKES = "database_catatan_nakes.txt"
 
-
-def total_gizi(catatan):
-    totalKalori = 0
-    totalProtein = 0
-    totalKarbo = 0
-    
-    for c in catatan:
-        totalKalori = totalKalori + c["kalori"]
-        totalProtein = totalProtein + c["protein"]
-        totalKarbo = totalKarbo + c["karbohidrat"]
-    
-    hasil = {}
-    hasil["kalori"] = totalKalori
-    hasil["protein"] = totalProtein
-    hasil["karbo"] = totalKarbo
-    return hasil
-
-
 def pilih_user_gizi():
     users = ambil_user_unik()
 
@@ -195,6 +177,10 @@ def pemantauan_gizi_nakes(userNakes):
             catatan = input("Masukkan catatan nakes: ").strip()
             if catatan == "":
                 print(">> Catatan tidak boleh kosong.")
+                continue
+            
+            if "|" in catatan:
+                print(">> Catatan tidak boleh mengandung karakter '|'.")
                 continue
 
             simpan_catatan_nakes(
