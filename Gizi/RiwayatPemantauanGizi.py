@@ -11,27 +11,23 @@ def ambil_catatan_nakes(username, tanggal):
         for baris in f:
             data = baris.strip().split("|")
             if len(data) == 4:
-                user = data[0]
-                tgl = data[1]
-                nakes = data[2]
-                catatan = data[3]
-                
-                if user == username and tgl == tanggal:
-                    hasil = {}
-                    hasil["nakes"] = nakes
-                    hasil["catatan"] = catatan
-                    return hasil
+                if data[0] == username and data[1] == tanggal:
+                    return {"nakes": data[2], "catatan": data[3]}
     return None
 
-def bubbleSort(array):
-    n = len(array)
+def bubbleSorting(l, k):
+    n = len(l)
+    hasil = []
+    for item in l:
+        hasil.append(item)
+    
     for i in range(n):
         for j in range(n - i - 1):
-            if array[j] > array[j + 1]:
-                k = array[j]
-                array[j] = array[j + 1]
-                array[j + 1] = k
-    return array
+            if hasil[j][k] < hasil[j + 1][k]:
+                sementara = hasil[j]
+                hasil[j] = hasil[j + 1]
+                hasil[j + 1] = sementara
+    return hasil
 
 def riwayat_hasil_pemantauan(username):
     data = lihat_catatan_user(username)
@@ -40,41 +36,86 @@ def riwayat_hasil_pemantauan(username):
         print(">> Belum ada catatan gizi.")
         return
 
-    print("\n--- Riwayat dan Hasil Pemantauan Gizi ---")
+    print("\n--- RIWAYAT DAN HASIL PEMANTAUAN GIZI ---")
     
-    dataDiTanggal = {}
-    for i in data:
-        tgl = i['tanggal']
+    print("\nNo  | Tanggal       | Makanan                 | Kalori | Protein | Karbo\n")
+    no = 1
+    for i in range(len(data)):
+        makanan = data[i]['makanan']
+        if len(makanan) > 23:
+            makanan = makanan[:20] + "..."
+        print(str(no) + "   | " + data[i]['tanggal'] + "   | " + makanan + "   | " + str(data[i]['kalori']) + "   | " + str(data[i]['protein']) + "   | " + str(data[i]['karbohidrat']))
+        tglNext = ""
+        if i + 1 < len(data):
+            tglNext = data[i + 1]['tanggal']
+        if data[i]['tanggal'] != tglNext:
+            catatan = ambil_catatan_nakes(username, data[i]['tanggal'])
+            if catatan:
+                print(f"    Catatan dari {catatan['nakes']}: {catatan['catatan']}")
+        no = no + 1
 
-        sudahAda = False
-        for tanggal in dataDiTanggal:
-            if tanggal == tgl:
-                sudahAda = True
-                break
+    while True:
+        print("\n1. Cari Berdasarkan Tanggal")
+        print("2. Urutkan Berdasarkan Nilai Gizi")
+        print("0. Kembali")
         
-        if sudahAda == False:
-            dataDiTanggal[tgl] = []
+        pilihan = input("Pilih menu: ")
         
-        dataDiTanggal[tgl].append(i)
-    
-    listTanggal = []
-    for tanggal in dataDiTanggal:
-        listTanggal.append(tanggal)
-
-    listTanggal = bubbleSort(listTanggal)
-
-    for tanggal in listTanggal:
-        print(f"\nRiwayat Pencatatan Gizi Tanggal {tanggal}:")
+        if pilihan == "1":
+            tglCari = input("Masukkan tanggal (DD-MM-YYYY): ")
+            hasil = []
+            for item in data:
+                if item['tanggal'] == tglCari:
+                    hasil.append(item)
+            if len(hasil) == 0:
+                print(">> Tidak ditemukan.")
+            else:
+                print("\nNo  | Tanggal       | Makanan                 | Kalori | Protein | Karbo\n")
+                no = 1
+                for i in range(len(hasil)):
+                    makanan = hasil[i]['makanan']
+                    if len(makanan) > 23:
+                        makanan = makanan[:20] + "..."
+                    print(str(no) + "   | " + hasil[i]['tanggal'] + "   | " + makanan + "   | " + str(hasil[i]['kalori']) + "   | " + str(hasil[i]['protein']) + "   | " + str(hasil[i]['karbohidrat']))
+                    tglNext = ""
+                    if i + 1 < len(hasil):
+                        tglNext = hasil[i + 1]['tanggal']
+                    if hasil[i]['tanggal'] != tglNext:
+                        catatan = ambil_catatan_nakes(username, hasil[i]['tanggal'])
+                        if catatan:
+                            print(f"    Catatan dari {catatan['nakes']}: {catatan['catatan']}")
+                    no = no + 1
         
-        for hasil in dataDiTanggal[tanggal]:
-            print(
-                f" • {hasil['makanan']} | "
-                f"Kalori: {hasil['kalori']} kkal | "
-                f"Protein: {hasil['protein']} g | "
-                f"Karbohidrat: {hasil['karbohidrat']} g"
-            )
-
-        catatanNakes = ambil_catatan_nakes(username, tanggal)
-        if catatanNakes:
-            print(f"Rekomendasi atau Catatan dari {catatanNakes['nakes']}:")
-            print(f"    {catatanNakes['catatan']}")
+        elif pilihan == "2":
+            print("\n1. Kalori")
+            print("2. Protein")
+            print("3. Karbohidrat")
+            pil = input("Pilihan: ")
+            
+            if pil == "1":
+                sorted_data = bubbleSorting(data, 'kalori')
+            elif pil == "2":
+                sorted_data = bubbleSorting(data, 'protein')
+            elif pil == "3":
+                sorted_data = bubbleSorting(data, 'karbohidrat')
+            else:
+                continue
+            
+            print("\nNo  | Tanggal       | Makanan                 | Kalori | Protein | Karbo\n")
+            no = 1
+            for i in range(len(sorted_data)):
+                makanan = sorted_data[i]['makanan']
+                if len(makanan) > 23:
+                    makanan = makanan[:20] + "..."
+                print(str(no) + "   | " + sorted_data[i]['tanggal'] + "   | " + makanan + "   | " + str(sorted_data[i]['kalori']) + "   | " + str(sorted_data[i]['protein']) + "   | " + str(sorted_data[i]['karbohidrat']))
+                tglNext = ""
+                if i + 1 < len(sorted_data):
+                    tglNext = sorted_data[i + 1]['tanggal']
+                if sorted_data[i]['tanggal'] != tglNext:
+                    catatan = ambil_catatan_nakes(username, sorted_data[i]['tanggal'])
+                    if catatan:
+                        print(f"    Catatan dari {catatan['nakes']}: {catatan['catatan']}")
+                no = no + 1
+        
+        elif pilihan == "0":
+            break
