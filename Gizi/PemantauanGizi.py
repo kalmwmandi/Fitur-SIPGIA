@@ -192,6 +192,11 @@ def pemantauan_gizi_nakes(userNakes):
 
             tanggalTerpilih = tanggalList[nomor]
 
+            nakes_penangan = cek_pasien_ditangani(username, tanggalTerpilih)
+            if nakes_penangan != None and nakes_penangan != userNakes["nama"]:
+                print(f"\n>> Tidak bisa karena pasien sudah ditangani oleh {nakes_penangan}")
+                break
+
             catatan = input("Masukkan catatan nakes: ").strip()
             if catatan == "":
                 print(">> Catatan tidak boleh kosong.")
@@ -211,3 +216,11 @@ def pemantauan_gizi_nakes(userNakes):
             break
         else:
             print(">> Pilihan tidak valid.")
+            
+def cek_pasien_ditangani(username, tanggal):
+    semua = baca_catatan_nakes()
+    for c in semua:
+        if c["username"] == username and c["tanggal"] == tanggal:
+            return c["nama_nakes"]
+    return None
+            
