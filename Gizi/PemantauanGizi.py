@@ -72,7 +72,6 @@ def rekap_gizi_harian(username):
 
     return rekap
 
-
 def baca_catatan_nakes():
     if os.path.exists(DB_CATATAN_NAKES) == False:
         return []
@@ -89,6 +88,21 @@ def baca_catatan_nakes():
                     "catatan": data[3]
                 })
     return hasil
+
+# Sorting data field kalori
+def ambil_kalori(item):
+    return item[1]["kalori"]
+
+
+def sort_rekap_by_kalori(rekap):
+    data = []
+
+    for tgl in rekap:
+        data.append((tgl, rekap[tgl]))
+
+    data.sort(key=ambil_kalori)
+
+    return data
 
 
 def simpan_catatan_nakes(username, tanggal, namaNakes, catatan):
@@ -112,7 +126,9 @@ def simpan_catatan_nakes(username, tanggal, namaNakes, catatan):
     
     with open(DB_CATATAN_NAKES, "w") as f:
         for c in semua:
-            f.write(f"{c['username']}|{c['tanggal']}|{c['nama_nakes']}|{c['catatan']}\n")
+            f.write(
+                f"{c['username']}|{c['tanggal']}|{c['nama_nakes']}|{c['catatan']}\n"
+            )
 
 
 def pemantauan_gizi_nakes(userNakes):
@@ -122,6 +138,7 @@ def pemantauan_gizi_nakes(userNakes):
 
     tb, bb = ambil_tb_bb(username)
     rekap = rekap_gizi_harian(username)
+    catatanNakes = baca_catatan_nakes()
 
     if len(rekap) == 0:
         print(">> Tidak ada data gizi.")
@@ -131,13 +148,36 @@ def pemantauan_gizi_nakes(userNakes):
     print(f"Tinggi Badan : {tb} cm")
     print(f"Berat Badan  : {bb} kg")
 
-    print("\nTanggal       | Kalori | Protein | Karbo\n")
+    # Tambahkan menu untuk sorted atau normal
+    print("\n1. Urutkan berdasarkan Kalori")
+    print("2. Tampilan Normal")
+    pilihSort = input("Pilih tampilan: ")
+
+    if pilihSort == "1":
+        dataTampil = sort_rekap_by_kalori(rekap)
+    else:
+        dataTampil = []
+        for tgl in rekap:
+            dataTampil.append((tgl, rekap[tgl]))
+
+    print("\nTanggal       | Kalori | Protein | Karbo | Catatan Nakes\n")
 
     tanggalList = []
-    for tgl in rekap:
+
+    for tgl, g in dataTampil:
         tanggalList.append(tgl)
-        g = rekap[tgl]
-        print(f"{tgl:<13} | {g['kalori']:.0f}   | {g['protein']:.1f}    | {g['karbo']:.1f}")
+
+        catatan = "-"
+        for c in catatanNakes:
+            if c["username"] == username and c["tanggal"] == tgl:
+                catatan = f"{c['nama_nakes']}: {c['catatan']}"
+                break
+
+        print(
+            f"{tgl:<13} | {g['kalori']:.0f}   | "
+            f"{g['protein']:.1f}    | "
+            f"{g['karbo']:.1f} | {catatan}"
+        )
 
     while True:
         print("\n1. Tambahkan Catatan")
